@@ -9,6 +9,7 @@ Route::get('/test', function () {
     return ['message' => 'API is working!'];
 });
 
+
 Route::middleware('device')->group(function () {
 
     // Auth Controller
