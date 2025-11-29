@@ -18,13 +18,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->redirectGuestsTo(function () {
-        //     if (request()->is('api/*')) {
-        //         return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 400);
-        //     }
+        $middleware->redirectGuestsTo(function () {
+            if (request()->is('api/*')) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized',
+                ], 401);
+            }
 
-        //     return route('login');
-        // });
+            return url('/');
+        });
 
         $middleware
             ->alias([
@@ -32,11 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
             ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-        //     if ($request->is('api/*')) {
-        //         return response()->json([
-        //             'message' => 'Record not found.',
-        //         ], 404);
-        //     }
-        // });
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'Record not found.',
+                ], 404);
+            }
+        });
     })->create();
