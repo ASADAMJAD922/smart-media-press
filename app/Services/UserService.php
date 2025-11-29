@@ -15,12 +15,10 @@ use Illuminate\Support\Facades\Log;
 class UserService
 {
     protected User $user;
-    protected Verification $verification;
 
-    public function __construct(User $user, Verification $verification)
+    public function __construct(User $user)
     {
         $this->user = $user;
-        $this->verification = $verification;
     }
 
     private function generateToken(): int
@@ -38,10 +36,6 @@ class UserService
         $verification = $this->getUserVerification($phone);
         if ($isEmail) {
             $verification = $this->getUserVerificationViaEmail($request->email);
-        }
-
-        if (!$verification) {
-            $verification = new Verification();
         }
 
         $verification->phone = $phone;
