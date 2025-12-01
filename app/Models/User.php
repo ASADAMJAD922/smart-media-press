@@ -21,6 +21,7 @@ class User extends Authenticatable
 
     const SUPER_ADMINISTRATOR = 'SUPER_ADMINISTRATOR';
     const USER = 'USER';
+    const AUTHOR = 'AUTHOR';
 
     const PENDING = 'PENDING';
     const ACTIVE = 'ACTIVE';
