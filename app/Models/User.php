@@ -40,7 +40,8 @@ class User extends Authenticatable
         'phone',
         'password',
         'device_token',
-        'date_of_birth'
+        'date_of_birth',
+        'role'
     ];
 
     /**
