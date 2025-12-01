@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
+            $table->string('phone')->nullable();
             $table->string('role');
             $table->foreignId('country_id')->nullable();
             $table->string('date_of_birth')->nullable();
