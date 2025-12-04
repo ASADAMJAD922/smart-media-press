@@ -29,7 +29,16 @@ class ProductController extends Controller
 
         if ($validate->fails()) return $this->formatResponse('error', $validate->errors()->first(), null, 400);
 
-        $product = Product::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_product.' . $request->image->extension();
+            $request->image->move(public_path('images/products'), $imageName);
+            $data['image'] = 'images/products/' . $imageName;
+        }
+
+        $product = Product::create($data);
+
         return $this->formatResponse('success', 'product-created-successfully', $product);
     }
 
@@ -58,7 +67,21 @@ class ProductController extends Controller
 
         if ($validate->fails()) return $this->formatResponse('error', $validate->errors()->first(), null, 400);
 
-        $product->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+
+            // delete old image
+            if ($product->image && file_exists(public_path($product->image))) {
+                unlink(public_path($product->image));
+            }
+
+            $imageName = time() . '_product.' . $request->image->extension();
+            $request->image->move(public_path('images/products'), $imageName);
+            $data['image'] = 'images/products/' . $imageName;
+        }
+
+        $product->update($data);
         return $this->formatResponse('success', 'product-updated-successfully', $product);
     }
 

@@ -27,7 +27,16 @@ class CategoryController extends Controller
             return $this->formatResponse('error', $validate->errors()->first(), null, 400);
         }
 
-        $category = Category::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_category.' . $request->image->extension();
+            $request->image->move(public_path('images/categories'), $imageName);
+            $data['image'] = 'images/categories/' . $imageName;
+        }
+
+        $category = Category::create($data);
+
         return $this->formatResponse('success', 'category-created-successfully', $category);
     }
 
@@ -54,7 +63,21 @@ class CategoryController extends Controller
             return $this->formatResponse('error', $validate->errors()->first(), null, 400);
         }
 
-        $category->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+
+            if ($category->image && file_exists(public_path($category->image))) {
+                unlink(public_path($category->image));
+            }
+
+            $imageName = time() . '_category.' . $request->image->extension();
+            $request->image->move(public_path('images/categories'), $imageName);
+            $data['image'] = 'images/categories/' . $imageName;
+        }
+
+        $category->update($data);
+        
         return $this->formatResponse('success', 'category-updated-successfully', $category);
     }
 

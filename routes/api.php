@@ -24,6 +24,9 @@ Route::middleware('device')->group(function () {
 // Post authenticated route
 Route::middleware('auth:sanctum')->group(function () {
 
+    // ==========================
+    // USER API'S
+    // ==========================
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
