@@ -36,38 +36,20 @@ class DeviceApiMiddleware
             $request->merge(['device' => $device]);
 
             if ($request->user('sanctum')) {
-
                 $device->users()->syncWithoutDetaching($request->user('sanctum')->id);
-                $user = $request->user('sanctum');
-                $user->device_id = $device->device_id;
-                $user->device_token = $device->device_token;
-                $user->app_version = $device->app_version;
-                $user->device_manufacturer = $device->device_manufacturer;
-                $user->device_type = $device->device_type;
-                $user->save();
-
             }
         } elseif ($request->header('X-Fingerprint')) {
 
             $device = Device::where('fingerprint_id', $request->header('X-Fingerprint'))->first();
-                if (!$device) {
-                    $device = Device::create([
-                        'fingerprint_id' => $request->header('X-Fingerprint'),
-                    ]);
-                }
+            if (!$device) {
+                $device = Device::create([
+                    'fingerprint_id' => $request->header('X-Fingerprint'),
+                ]);
+            }
             $request->merge(['device' => $device]);
 
             if ($request->user('sanctum')) {
-
                 $device->users()->syncWithoutDetaching($request->user('sanctum')->id);
-                $user = $request->user('sanctum');
-                $user->device_id = $device->device_id;
-                $user->device_token = $device->device_token;
-                $user->app_version = $device->app_version;
-                $user->device_manufacturer = $device->device_manufacturer;
-                $user->device_type = $device->device_type;
-                $user->save();
-
             }
         } else {
             $device = Device::firstOrCreate(
@@ -84,19 +66,8 @@ class DeviceApiMiddleware
 
             if ($request->user('sanctum')) {
                 $device->users()->syncWithoutDetaching($request->user('sanctum')->id);
-                $user = $request->user('sanctum');
-
-                $user->device_id = $device->device_id;
-                $user->device_token = $device->device_token;
-                $user->app_version = $device->app_version;
-                $user->device_manufacturer = $device->device_manufacturer;
-                $user->device_type = $device->device_type;
-                $user->save();
-
             }
-
         }
         return $next($request);
-
     }
 }
