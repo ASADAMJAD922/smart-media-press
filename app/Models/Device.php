@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Device extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'device_id',
@@ -31,17 +32,26 @@ class Device extends Model
         'last_activity_at' => 'datetime',
     ];
 
-    public function scopeIsMobile($query){
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, DeviceUser::class, 'device_id', 'user_id')->withTimestamps();
+    }
+
+    public function scopeIsMobile($query)
+    {
         $query->where('is_mobile', true);
     }
 
-    public function scopeGuest($query){
+    public function scopeGuest($query)
+    {
         return $query->whereNotNull('user_id');
     }
-    public function scopeNativeMobile($query){
+    public function scopeNativeMobile($query)
+    {
         return $query->whereNotNull('device_id');
     }
-    public function scopeWebsite($query){
+    public function scopeWebsite($query)
+    {
         return $query->whereNotNull('fingerprint_id');
     }
 }
