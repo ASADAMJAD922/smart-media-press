@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AuthorsController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\QuestionController;
+use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/testing', function () {
@@ -60,4 +62,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/authors/{id}', [AuthorsController::class, 'show']);
     Route::put('/authors/{id}', [AuthorsController::class, 'update']);
     Route::delete('/authors/{id}', [AuthorsController::class, 'destroy']);
+    
+    
+    // ==========================
+    // Question CRUD
+    // ==========================
+    Route::get('/questions', [QuestionController::class, 'index']);
+    Route::post('/questions', [QuestionController::class, 'store']);
+    Route::get('/questions/{question}', [QuestionController::class, 'show']);
+    Route::post('/questions/{question}', [QuestionController::class, 'update']);
+    Route::delete('/questions/{question}', [QuestionController::class, 'destroy']);
+
+    
+    // ==========================
+    // Blog CRUD
+    // ==========================
+    Route::apiResource('blogs', BlogController::class);
 });
