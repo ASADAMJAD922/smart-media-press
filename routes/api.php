@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\QuestionController;
-use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Api\BlogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/testing', function () {
@@ -18,7 +18,6 @@ Route::middleware('device')->group(function () {
     // Auth Controller
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-
     // Device Controller
     Route::post('/device/web-sync', [DeviceController::class, 'syncDeviceWeb']);
 });
