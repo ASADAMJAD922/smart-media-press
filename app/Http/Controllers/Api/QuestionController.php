@@ -14,7 +14,7 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::with('options')->get();
+        $questions = Question::with(['options', 'authors'])->get();
 
         return $this->formatResponse('success', 'questions-list', $questions);
     }
@@ -28,6 +28,8 @@ class QuestionController extends Controller
         $request->validate([
             'question_text' => 'required|string',
             'is_active' => 'boolean',
+            'authors' => 'required|array|min:1',
+            'authors.*' => 'exists:users,id',
             'options' => 'required|array|min:2',
             'options.*.name' => 'required|string',
             'options.*.text' => 'required|string',
@@ -50,7 +52,15 @@ class QuestionController extends Controller
             ]);
         }
 
-        return $this->formatResponse('success', 'question-created-successfully', $question->load('options'), 201);
+        // attach authors
+        $question->authors()->sync($request->authors);
+
+        return $this->formatResponse(
+            'success',
+            'question-created-successfully',
+            $question->load(['options', 'authors']),
+            201
+        );
     }
 
 
@@ -59,7 +69,11 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        return $this->formatResponse('success', 'question-detail', $question->load('options'));
+        return $this->formatResponse(
+            'success',
+            'question-detail',
+            $question->load(['options', 'authors'])
+        );
     }
 
 
@@ -71,6 +85,8 @@ class QuestionController extends Controller
         $request->validate([
             'question_text' => 'required|string',
             'is_active' => 'boolean',
+            'authors' => 'required|array|min:1',
+            'authors.*' => 'exists:users,id',
             'options' => 'required|array|min:2',
             'options.*.id' => 'nullable|exists:options,id',
             'options.*.name' => 'required|string',
@@ -85,6 +101,7 @@ class QuestionController extends Controller
             'is_active' => $request->is_active ?? $question->is_active,
         ]);
 
+        // update options
         $existingOptionIds = [];
 
         foreach ($request->options as $opt) {
@@ -126,10 +143,13 @@ class QuestionController extends Controller
             ->whereNotIn('id', $existingOptionIds)
             ->delete();
 
+        // update authors
+        $question->authors()->sync($request->authors);
+
         return $this->formatResponse(
             'success',
             'question-updated-successfully',
-            $question->load('options')
+            $question->load(['options', 'authors'])
         );
     }
 
@@ -142,6 +162,10 @@ class QuestionController extends Controller
     {
         $question->delete();
 
-        return $this->formatResponse('success', 'question-deleted-successfully', null, 200);
+        return $this->formatResponse(
+            'success',
+            'question-deleted-successfully',
+            null
+        );
     }
 }
