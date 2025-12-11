@@ -107,4 +107,11 @@ class User extends Authenticatable
     {
         return $this->device_manufacturer == "HUAWEI";
     }
+
+    public function questions()
+    {
+        return $this->belongsToMany(Question::class, 'author_question', 'author_id', 'question_id')
+            ->using(\App\Models\AuthorQuestion::class)
+            ->withTimestamps();
+    }
 }
