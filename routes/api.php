@@ -25,9 +25,6 @@ Route::post('/register', [AuthController::class, 'register']);
 */
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
-    Route::get('/testing', function () {
-        return ['message' => 'API is working!'];
-    });
     // User
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);

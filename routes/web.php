@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\DeviceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(url('https://smartpressmedia.com/'));
 });
 
 /*
@@ -22,10 +22,10 @@ Route::get('/', function () {
 
 Route::middleware('device')->group(function () {
 
-    // // Testing
-    // Route::get('/testing', function () {
-    //     return ['message' => 'API is working!'];
-    // });
+    // Testing
+    Route::get('/testing', function () {
+        return ['message' => 'API is working!'];
+    });
 
     // Products
     Route::get('/products', [ProductController::class, 'index']);
