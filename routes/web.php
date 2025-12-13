@@ -20,7 +20,7 @@ Route::get('/', function () {
 | Device middleware required
 */
 
-Route::middleware('device')->group(function () {
+// Route::middleware('device')->group(function () {
 
     // Testing
     Route::get('/testing', function () {
@@ -49,4 +49,4 @@ Route::middleware('device')->group(function () {
 
     // Device sync
     Route::post('/device/web-sync', [DeviceController::class, 'syncDeviceWeb']);
-});
+// });
