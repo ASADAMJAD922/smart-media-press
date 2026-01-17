@@ -8,9 +8,27 @@ use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $suffix = 1;
+
+        while (
+            Product::where('slug', $slug)
+                ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+                ->exists()
+        ) {
+            $slug = $originalSlug . '-' . $suffix;
+            $suffix++;
+        }
+
+        return $slug;
+    }
     /**
      * Get all products
      */
@@ -69,6 +87,8 @@ class ProductController extends Controller
         $variants = $data['variants'] ?? [];
         unset($data['variants']);
 
+        $data['slug'] = $this->generateUniqueSlug($data['name']);
+
         $product = Product::create($data);
 
         foreach ($variants as $variant) {
@@ -89,9 +109,11 @@ class ProductController extends Controller
     /**
      * Show product
      */
-    public function show($id)
+    public function show($slug)
     {
-        $product = Product::with(['variants', 'category', 'author'])->find($id);
+        $product = Product::with(['variants', 'category', 'author'])
+            ->where('slug', $slug)
+            ->first();
 
         if (!$product) {
             return $this->formatResponse(
@@ -167,6 +189,10 @@ class ProductController extends Controller
 
         $variants = $data['variants'] ?? [];
         unset($data['variants']);
+
+        if (isset($data['name'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['name'], $product->id);
+        }
 
         $product->update($data);
 
